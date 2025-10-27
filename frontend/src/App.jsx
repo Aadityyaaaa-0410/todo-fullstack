@@ -4,29 +4,41 @@ import TodoList from "./components/TodoList";
 
 function App() {
   const [todos, setTodos] = useState([]);
-
   const API_BASE = "http://ff-1740939327.us-east-1.elb.amazonaws.com";
 
+  // Fetch all todos from backend
   useEffect(() => {
-    fetch(`${API_BASE}/todos`)
+    fetch(`${API_BASE}/todos-a`)
       .then((res) => res.json())
       .then((data) => setTodos(data))
       .catch((err) => console.error("Error fetching todos:", err));
   }, []);
 
-  const addTodo = async (text) => {
-    const res = await fetch(`${API_BASE}/todos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
-    const newTodo = await res.json();
-    setTodos([...todos, newTodo]);
+  // Add a new todo
+  const addTodo = async (task) => {
+    if (!task || task.trim() === "") return;
+    try {
+      const res = await fetch(`${API_BASE}/add-todo-a`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task }),
+      });
+      const result = await res.json();
+      console.log(result);
+      setTodos([...todos, { task }]);
+    } catch (err) {
+      console.error("Error adding todo:", err);
+    }
   };
 
+  // Delete a todo by ID
   const deleteTodo = async (id) => {
-    await fetch(`${API_BASE}/todos/${id}`, { method: "DELETE" });
-    setTodos(todos.filter((t) => t.id !== id));
+    try {
+      await fetch(`${API_BASE}/delete-todo-a/${id}`, { method: "DELETE" });
+      setTodos(todos.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error("Error deleting todo:", err);
+    }
   };
 
   return (

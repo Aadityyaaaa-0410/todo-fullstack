@@ -10,7 +10,7 @@ function TodoInput({ addTodo }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
+    <div className="mb-6">
       <div className="flex gap-2">
         <input
           type="text"
@@ -18,15 +18,16 @@ function TodoInput({ addTodo }) {
           onChange={(e) => setTask(e.target.value)}
           placeholder="Add a new todo..."
           className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+          onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
         />
         <button
-          type="submit"
+          onClick={handleSubmit}
           className="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors font-semibold"
         >
           Add
         </button>
       </div>
-    </form>
+    </div>
   );
 }
 
@@ -74,7 +75,7 @@ function App() {
     fetchTodos();
   }, []);
 
-  // ✅ Add new todo - FIXED
+  // ✅ Add new todo
   const addTodo = async (task) => {
     if (!task || task.trim() === "") return;
     try {
@@ -84,9 +85,8 @@ function App() {
         body: JSON.stringify({ task }),
       });
       const data = await res.json();
-      console.log("API Response:", data); // Debug log
       if (res.ok) {
-        setTodos([...todos, data]); // ✅ Fixed: changed from data.todo to data
+        setTodos([...todos, data]);
       } else {
         console.error("Error adding todo:", data.error);
       }

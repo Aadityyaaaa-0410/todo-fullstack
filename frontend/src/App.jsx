@@ -5,15 +5,17 @@ import TodoList from "./components/TodoList";
 function App() {
   const [todos, setTodos] = useState([]);
 
+  const API_BASE = "http://ff-1740939327.us-east-1.elb.amazonaws.com";
+
   useEffect(() => {
-    fetch("http://localhost:5000/todos")
+    fetch(`${API_BASE}/todos`)
       .then((res) => res.json())
       .then((data) => setTodos(data))
       .catch((err) => console.error("Error fetching todos:", err));
   }, []);
 
   const addTodo = async (text) => {
-    const res = await fetch("http://localhost:5000/todos", {
+    const res = await fetch(`${API_BASE}/todos`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
@@ -23,7 +25,7 @@ function App() {
   };
 
   const deleteTodo = async (id) => {
-    await fetch(`http://localhost:5000/todos/${id}`, { method: "DELETE" });
+    await fetch(`${API_BASE}/todos/${id}`, { method: "DELETE" });
     setTodos(todos.filter((t) => t.id !== id));
   };
 

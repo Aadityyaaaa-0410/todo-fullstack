@@ -6,36 +6,53 @@ function App() {
   const [todos, setTodos] = useState([]);
   const API_BASE = "http://ff-1740939327.us-east-1.elb.amazonaws.com";
 
-  // Fetch all todos from backend
+  // ✅ Fetch all todos
+  const fetchTodos = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/todos-a`);
+      const data = await res.json();
+      setTodos(data);
+    } catch (err) {
+      console.error("Error fetching todos:", err);
+    }
+  };
+
   useEffect(() => {
-    fetch(`${API_BASE}/todos-a`)
-      .then((res) => res.json())
-      .then((data) => setTodos(data))
-      .catch((err) => console.error("Error fetching todos:", err));
+    fetchTodos();
   }, []);
 
-  // Add a new todo
+  // ✅ Add new todo
   const addTodo = async (task) => {
     if (!task || task.trim() === "") return;
+
     try {
       const res = await fetch(`${API_BASE}/add-todo-a`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ task }),
       });
-      const result = await res.json();
-      console.log(result);
-      setTodos([...todos, { task }]);
+
+      const data = await res.json();
+      if (res.ok) {
+        setTodos([...todos, data.todo]); // use returned todo with id
+      } else {
+        console.error("Error adding todo:", data.error);
+      }
     } catch (err) {
       console.error("Error adding todo:", err);
     }
   };
 
-  // Delete a todo by ID
+  // ✅ Delete todo
   const deleteTodo = async (id) => {
     try {
-      await fetch(`${API_BASE}/delete-todo-a/${id}`, { method: "DELETE" });
-      setTodos(todos.filter((t) => t.id !== id));
+      const res = await fetch(`${API_BASE}/delete-todo-a/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setTodos(todos.filter((t) => t.id !== id));
+      }
     } catch (err) {
       console.error("Error deleting todo:", err);
     }

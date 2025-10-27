@@ -1,6 +1,59 @@
 import { useEffect, useState } from "react";
-import TodoInput from "./components/TodoInput";
-import TodoList from "./components/TodoList";
+
+function TodoInput({ addTodo }) {
+  const [task, setTask] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    addTodo(task);
+    setTask("");
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mb-6">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          placeholder="Add a new todo..."
+          className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+        />
+        <button
+          type="submit"
+          className="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors font-semibold"
+        >
+          Add
+        </button>
+      </div>
+    </form>
+  );
+}
+
+function TodoList({ todos, deleteTodo }) {
+  return (
+    <div className="space-y-2">
+      {todos.length === 0 ? (
+        <p className="text-center text-gray-400 py-8">No todos yet. Add one above!</p>
+      ) : (
+        todos.map((todo) => (
+          <div
+            key={todo.id}
+            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <span className="text-gray-800">{todo.task}</span>
+            <button
+              onClick={() => deleteTodo(todo.id)}
+              className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm font-medium"
+            >
+              Delete
+            </button>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -21,20 +74,19 @@ function App() {
     fetchTodos();
   }, []);
 
-  // ✅ Add new todo
+  // ✅ Add new todo - FIXED
   const addTodo = async (task) => {
     if (!task || task.trim() === "") return;
-
     try {
       const res = await fetch(`${API_BASE}/add-todo-a`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ task }),
       });
-
       const data = await res.json();
+      console.log("API Response:", data); // Debug log
       if (res.ok) {
-        setTodos([...todos, data.todo]); // use returned todo with id
+        setTodos([...todos, data]); // ✅ Fixed: changed from data.todo to data
       } else {
         console.error("Error adding todo:", data.error);
       }
@@ -49,7 +101,6 @@ function App() {
       const res = await fetch(`${API_BASE}/delete-todo-a/${id}`, {
         method: "DELETE",
       });
-
       if (res.ok) {
         setTodos(todos.filter((t) => t.id !== id));
       }

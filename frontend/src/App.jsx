@@ -5,7 +5,7 @@ import TodoList from "./components/TodoList";
 function App() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const API_BASE = "http://ff-1740939327.us-east-1.elb.amazonaws.com";
+  const API_BASE = "http://alb-1122585112.us-east-1.elb.amazonaws.com";
 
   // ✅ Fetch all todos
   const fetchTodos = async () => {

@@ -1,32 +1,35 @@
 import { useState } from "react";
 
 function TodoInput({ addTodo }) {
-  const [text, setText] = useState("");
+  const [task, setTask] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!text.trim()) return;
-    addTodo(text);
-    setText("");
+    if (task.trim()) {
+      addTodo(task);
+      setTask("");
+    }
   };
 
   return (
-    <form className="flex gap-3 mb-6 bg-white/90 p-3 rounded-xl shadow-md backdrop-blur">
-
-      <input
-        type="text"
-        placeholder="Add a new task..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        className="flex-1 border-2 border-gray-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-300 focus:outline-none text-gray-700"
-      />
-      <button
-        type="submit"
-        className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-5 py-2 rounded-lg transition-all duration-200 shadow-md"
-      >
-        Add
-      </button>
-    </form>
+    <div className="mb-6">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          placeholder="Add a new todo..."
+          className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+          onKeyPress={(e) => e.key === 'Enter' && handleSubmit(e)}
+        />
+        <button
+          onClick={handleSubmit}
+          className="px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors font-semibold"
+        >
+          Add
+        </button>
+      </div>
+    </div>
   );
 }
 

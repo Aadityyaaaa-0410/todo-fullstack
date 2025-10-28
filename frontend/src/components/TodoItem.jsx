@@ -1,14 +1,14 @@
 function TodoItem({ todo, deleteTodo }) {
   return (
-    <li className="flex justify-between items-center bg-gray-100 px-4 py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
-      <span className="text-gray-800">{todo.text}</span>
+    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+      <span className="text-gray-800 flex-1">{todo.task || todo.title || "Untitled"}</span>
       <button
         onClick={() => deleteTodo(todo.id)}
-        className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-1 rounded-md hover:opacity-90 shadow-sm"
+        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors text-sm font-medium"
       >
         Delete
       </button>
-    </li>
+    </div>
   );
 }
 

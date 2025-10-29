@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # OR self-hosted if you prefer
+    runs-on: self-hosted   # ✅ Updated to self-hosted runner
 
     permissions:
       contents: read
